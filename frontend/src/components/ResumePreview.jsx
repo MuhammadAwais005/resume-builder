@@ -228,22 +228,20 @@ const ResumePreview = forwardRef(({ data, template }, ref) => {
     <>
       <style>{`
         @media print {
-            /* 
-               CRITICAL FIX: 
-               Instead of display: none (which kills the child content),
-               we use visibility: hidden to hide the "junk" 
-               but keep the structure alive so the Resume can override it.
-            */
+            /* 1. Hide everything else (Visibility Hidden allows children to override) */
             body * {
                 visibility: hidden;
             }
 
-            /* Re-enable visibility specifically for the resume */
+            /* 2. Show the Resume & Force Colors */
             #resume-preview-container, #resume-preview-container * {
                 visibility: visible;
+                -webkit-print-color-adjust: exact !important;   /* Chrome/Safari */
+                print-color-adjust: exact !important;           /* Firefox */
+                color-adjust: exact !important;
             }
 
-            /* Position the resume at the absolute top-left of the paper */
+            /* 3. Positioning */
             #resume-preview-container {
                 position: absolute;
                 left: 0;
@@ -252,7 +250,7 @@ const ResumePreview = forwardRef(({ data, template }, ref) => {
                 min-height: 297mm;
                 margin: 0;
                 padding: 0;
-                background-color: white;
+                background-color: white !important;
                 z-index: 999999;
             }
         }
