@@ -131,9 +131,13 @@ function App() {
             loading={loading}
           />
         </div>
+        {/* RIGHT: Live Preview (Sticky) */}
         <div className="w-full lg:w-1/2">
           <div className="sticky top-24">
-            <ResumePreview ref={printRef} data={resumeData} template={selectedTemplate} />
+            {/* Added overflow-x-auto to allow horizontal scrolling on mobile */}
+            <div className="bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-200 overflow-x-auto">
+              <ResumePreview ref={printRef} data={resumeData} template={selectedTemplate} />
+            </div>
           </div>
         </div>
       </div>
