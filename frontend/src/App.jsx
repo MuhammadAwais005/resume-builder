@@ -99,7 +99,7 @@ function App() {
       <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-slate-200 print:hidden">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-blue-700">ResumeAI <span className="text-xs text-slate-500">PRO</span></h1>
+            <h1 className="text-2xl font-bold text-blue-700">ResumeAI <span className="text-xs text-slate-500">MAKF</span></h1>
           </div>
 
           <div className="flex items-center gap-3">

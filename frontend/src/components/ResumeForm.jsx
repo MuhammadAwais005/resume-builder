@@ -84,7 +84,7 @@ const ResumeForm = ({ data, handlePersonalChange, handleImageUpload, addField, r
                <button onClick={() => triggerAi(exp.role, 'experience', index, 'description')} className="text-xs text-blue-600 font-bold mt-1 flex gap-1"><Sparkles size={10} /> Enhance</button>
             </div>
           ))}
-          <button onClick={() => addField('experience', { company: '', role: '', date: '', location: '', description: '' })} className="add-btn"><Plus size={14} /> Add Job</button>
+          <button onClick={() => addField('experience', { company: '', role: '', date: '', location: '', description: '' })} className="add-btn"><Plus size={14} /> Add Experience</button>
         </div>
       )}
 
@@ -129,11 +129,11 @@ const ResumeForm = ({ data, handlePersonalChange, handleImageUpload, addField, r
         <div className="p-6 space-y-4">
            <div>
               <label className="text-xs font-medium text-slate-500">Technical Skills</label>
-              <textarea value={data.skills} onChange={(e) => handleListChange(e, 'skills')} placeholder="Python, Django, React..." className="input-field w-full" />
+              <textarea value={data.skills} onChange={(e) => handleListChange(e, 'skills')} placeholder="add here your skills..." className="input-field w-full" />
            </div>
            <div>
               <label className="text-xs font-medium text-slate-500">Languages</label>
-              <textarea value={data.languages} onChange={(e) => handleListChange(e, 'languages')} placeholder="English, Spanish..." className="input-field w-full" />
+              <textarea value={data.languages} onChange={(e) => handleListChange(e, 'way of Communication')} placeholder="English, Spanish..." className="input-field w-full" />
            </div>
            <div>
               <label className="text-xs font-medium text-slate-500">Interests</label>
