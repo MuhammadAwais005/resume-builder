@@ -227,49 +227,37 @@ const ResumePreview = forwardRef(({ data, template }, ref) => {
   return (
     <>
       <style>{`
-        /* --- GOD MODE CSS FOR MOBILE PRINT --- */
         @media print {
-            /* 1. HIDE EVERYTHING */
-            body > * { display: none !important; }
-            
-            /* 2. SHOW ONLY THE RESUME CONTAINER */
-            /* We target the container by its ID and force it to show */
-            body > #root { display: block !important; }
-            #root > * { display: none !important; }
-            
-            /* Re-display the resume container specifically */
-            #resume-preview-container { 
-                display: block !important;
-                visibility: visible !important;
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 210mm !important;
-                height: 297mm !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                background-color: white !important;
-                z-index: 999999 !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
+            /* 
+               CRITICAL FIX: 
+               Instead of display: none (which kills the child content),
+               we use visibility: hidden to hide the "junk" 
+               but keep the structure alive so the Resume can override it.
+            */
+            body * {
+                visibility: hidden;
             }
-            
-            /* Ensure all children of the resume are visible */
-            #resume-preview-container * {
-                visibility: visible !important;
-                display: block; 
+
+            /* Re-enable visibility specifically for the resume */
+            #resume-preview-container, #resume-preview-container * {
+                visibility: visible;
             }
-            
-            /* Fix Grid Layouts on Mobile Print */
-            .grid { display: grid !important; }
-            .flex { display: flex !important; }
+
+            /* Position the resume at the absolute top-left of the paper */
+            #resume-preview-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 210mm;
+                min-height: 297mm;
+                margin: 0;
+                padding: 0;
+                background-color: white;
+                z-index: 999999;
+            }
         }
       `}</style>
       
-      {/* 
-         WRAPPER WITH ID 
-         This ID is crucial for the CSS above to find and isolate this component 
-      */}
       <div 
         id="resume-preview-container" 
         ref={ref} 
