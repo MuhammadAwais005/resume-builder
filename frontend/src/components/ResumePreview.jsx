@@ -227,36 +227,54 @@ const ResumePreview = forwardRef(({ data, template }, ref) => {
   return (
     <>
       <style>{`
-        /* FIX FOR MOBILE: Force A4 size and White Background */
+        /* --- GOD MODE CSS FOR MOBILE PRINT --- */
         @media print {
-            @page { size: A4 portrait; margin: 0; }
-            body { 
-                background-color: white !important; 
-                -webkit-print-color-adjust: exact; 
-                print-color-adjust: exact;
-            }
-            /* Override mobile responsive styles */
-            #resume-preview-container {
+            /* 1. HIDE EVERYTHING */
+            body > * { display: none !important; }
+            
+            /* 2. SHOW ONLY THE RESUME CONTAINER */
+            /* We target the container by its ID and force it to show */
+            body > #root { display: block !important; }
+            #root > * { display: none !important; }
+            
+            /* Re-display the resume container specifically */
+            #resume-preview-container { 
+                display: block !important;
+                visibility: visible !important;
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
                 width: 210mm !important;
-                min-width: 210mm !important;
                 height: 297mm !important;
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
+                margin: 0 !important;
+                padding: 0 !important;
                 background-color: white !important;
-                color: black !important;
+                z-index: 999999 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
-            /* Hide everything else */
-            .no-print { display: none !important; }
+            
+            /* Ensure all children of the resume are visible */
+            #resume-preview-container * {
+                visibility: visible !important;
+                display: block; 
+            }
+            
+            /* Fix Grid Layouts on Mobile Print */
+            .grid { display: grid !important; }
+            .flex { display: flex !important; }
         }
       `}</style>
       
-      {/* Container with ID for the print override */}
+      {/* 
+         WRAPPER WITH ID 
+         This ID is crucial for the CSS above to find and isolate this component 
+      */}
       <div 
         id="resume-preview-container" 
         ref={ref} 
         className="bg-white mx-auto shadow-2xl overflow-hidden" 
-        style={{ width: '210mm', minWidth: '210mm', minHeight: '297mm' }}
+        style={{ width: '210mm', minHeight: '297mm' }}
       >
         {template.includes('modern') ? <ModernTemplate /> : (template === 'classic' ? <ClassicTemplate /> : <MinimalTemplate />)}
       </div>

@@ -6,7 +6,6 @@ import ResumeForm from './components/ResumeForm';
 import ResumePreview from './components/ResumePreview';
 
 function App() {
-  // 1. STATE WITH ALL NEW FIELDS
   const [resumeData, setResumeData] = useState({
     personal: { fullName: '', jobTitle: '', email: '', phone: '', linkedin: '', github: '', website: '', summary: '' },
     image: null,
@@ -15,19 +14,16 @@ function App() {
     projects: [],
     skills: '',
     languages: '',
-    // NEW FIELDS
     certifications: [],
     awards: [],
     interests: '',
     volunteer: [],
   });
 
-  // NEW THEMES ADDED
   const [selectedTemplate, setSelectedTemplate] = useState('modern-blue'); 
   const [loading, setLoading] = useState(false);
   const printRef = useRef(null);
 
-  // HANDLERS
   const handlePersonalChange = (e) => {
     const { name, value } = e.target;
     setResumeData((prev) => ({ ...prev, personal: { ...prev.personal, [name]: value } }));
@@ -60,11 +56,9 @@ function App() {
     setResumeData((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
-  // AI ENHANCER
   const handleAiEnhance = async (promptText, sectionType) => {
     if (!promptText) return null;
     setLoading(true);
-    // Use Environment Variable for Production, localhost for dev
     const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
     try {
       const response = await axios.post(`${API_URL}/api/enhance/`, {
@@ -74,21 +68,35 @@ function App() {
       return response.data.enhanced_text;
     } catch (error) {
       console.error(error);
-      alert("AI Service Unavailable. Is backend running?");
+      alert("AI Service Unavailable.");
       return promptText;
     } finally {
       setLoading(false);
     }
   };
 
+  // --- THE FIX: STRICT PAGE STYLES FOR MOBILE ---
   const handlePrint = useReactToPrint({
     contentRef: printRef,
     documentTitle: `${resumeData.personal.fullName || 'Resume'}_CV`,
+    // This forces the browser to respect A4 size and remove margins
+    pageStyle: `
+      @page {
+        size: A4 portrait;
+        margin: 0mm;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+        }
+      }
+    `,
   });
 
   return (
-    <div className="min-h-screen bg-slate-100 font-sans text-slate-900 pb-20">
-      <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-slate-200">
+    <div className="min-h-screen bg-slate-100 font-sans text-slate-900 pb-20 print:bg-white">
+      {/* Navbar - Hidden on Print */}
+      <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-slate-200 print:hidden">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold text-blue-700">ResumeAI <span className="text-xs text-slate-500">PRO</span></h1>
@@ -110,7 +118,7 @@ function App() {
               </select>
             </div>
 
-            <button onClick={() => handlePrint && handlePrint()} className="flex items-center gap-2 bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700 transition font-semibold">
+            <button onClick={() => handlePrint && handlePrint()} className="flex items-center gap-2 bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700 transition font-semibold shadow-md">
               <Download size={18} /> Save PDF
             </button>
           </div>
@@ -118,7 +126,8 @@ function App() {
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
-        <div className="w-full lg:w-1/2 h-fit">
+        {/* Left Form - Hidden on Print */}
+        <div className="w-full lg:w-1/2 h-fit print:hidden">
           <ResumeForm
             data={resumeData}
             handlePersonalChange={handlePersonalChange}
@@ -131,11 +140,11 @@ function App() {
             loading={loading}
           />
         </div>
-        {/* RIGHT: Live Preview (Sticky) */}
+
+        {/* Right Preview - Visible on Print */}
         <div className="w-full lg:w-1/2">
           <div className="sticky top-24">
-            {/* Added overflow-x-auto to allow horizontal scrolling on mobile */}
-            <div className="bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-200 overflow-x-auto">
+            <div className="bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-200 overflow-x-auto print:shadow-none print:border-none print:overflow-visible">
               <ResumePreview ref={printRef} data={resumeData} template={selectedTemplate} />
             </div>
           </div>
