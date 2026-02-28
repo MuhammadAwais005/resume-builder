@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { 
   Briefcase, GraduationCap, Code, User, Plus, Trash2, Sparkles, 
-  Award, Heart, BookOpen, ChevronDown, ChevronUp 
+  Award, ChevronDown, ChevronUp 
 } from 'lucide-react';
 
+// --- THE FIX: Ensure handleListChange is in this list ---
 const ResumeForm = ({ data, handlePersonalChange, handleImageUpload, addField, removeField, updateField, handleListChange, handleAiEnhance, loading }) => {
   
-  // Helper to toggle sections to save space
   const [activeSection, setActiveSection] = useState('personal');
   const toggle = (section) => setActiveSection(activeSection === section ? null : section);
 
-  // Trigger AI
   const triggerAi = async (text, section, index, field) => {
     const enhanced = await handleAiEnhance(text, section);
     if (enhanced) {
@@ -20,13 +19,8 @@ const ResumeForm = ({ data, handlePersonalChange, handleImageUpload, addField, r
   };
 
   const SectionTitle = ({ id, icon: Icon, title }) => (
-    <div 
-      className="flex justify-between items-center cursor-pointer p-4 bg-slate-50 border-b border-slate-200 hover:bg-slate-100 transition"
-      onClick={() => toggle(id)}
-    >
-      <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-        <Icon className="text-blue-600" size={20} /> {title}
-      </h2>
+    <div className="flex justify-between items-center cursor-pointer p-4 bg-slate-50 border-b border-slate-200 hover:bg-slate-100 transition" onClick={() => toggle(id)}>
+      <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2"><Icon className="text-blue-600" size={20} /> {title}</h2>
       {activeSection === id ? <ChevronUp size={16}/> : <ChevronDown size={16}/>}
     </div>
   );
@@ -34,10 +28,10 @@ const ResumeForm = ({ data, handlePersonalChange, handleImageUpload, addField, r
   return (
     <div className="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden pb-4">
       
-      {/* 1. PERSONAL DETAILS */}
+      {/* 1. PERSONAL */}
       <SectionTitle id="personal" icon={User} title="Personal Details" />
       {activeSection === 'personal' && (
-        <div className="p-6 space-y-4 animate-fadeIn">
+        <div className="p-6 space-y-4">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-16 h-16 rounded-full bg-slate-200 overflow-hidden border">
               {data.image && <img src={data.image} alt="Profile" className="w-full h-full object-cover" />}
@@ -53,14 +47,12 @@ const ResumeForm = ({ data, handlePersonalChange, handleImageUpload, addField, r
             <input type="text" name="phone" placeholder="Phone" value={data.personal.phone} onChange={handlePersonalChange} className="input-field" />
             <input type="text" name="linkedin" placeholder="LinkedIn" value={data.personal.linkedin} onChange={handlePersonalChange} className="input-field" />
             <input type="text" name="github" placeholder="GitHub" value={data.personal.github} onChange={handlePersonalChange} className="input-field" />
-            <input type="text" name="website" placeholder="Portfolio / Website" value={data.personal.website} onChange={handlePersonalChange} className="input-field" />
+            <input type="text" name="website" placeholder="Portfolio" value={data.personal.website} onChange={handlePersonalChange} className="input-field" />
           </div>
           <div className="relative">
              <div className="flex justify-between mb-1">
                 <label className="text-xs font-medium text-slate-500">Summary</label>
-                <button onClick={() => triggerAi(data.personal.jobTitle || "Professional", 'summary', null, 'summary')} className="text-xs text-blue-600 font-bold flex items-center gap-1">
-                    <Sparkles size={10} /> AI Write
-                </button>
+                <button onClick={() => triggerAi(data.personal.jobTitle || "Professional", 'summary', null, 'summary')} className="text-xs text-blue-600 font-bold flex items-center gap-1"><Sparkles size={10} /> AI Write</button>
             </div>
             <textarea name="summary" rows="3" placeholder="Professional Summary..." value={data.personal.summary} onChange={handlePersonalChange} className="input-field w-full" />
           </div>
@@ -81,10 +73,9 @@ const ResumeForm = ({ data, handlePersonalChange, handleImageUpload, addField, r
                  <input type="text" placeholder="Location" value={exp.location} onChange={(e) => updateField('experience', index, 'location', e.target.value)} className="input-field" />
                </div>
                <textarea rows="3" placeholder="Responsibilities..." value={exp.description} onChange={(e) => updateField('experience', index, 'description', e.target.value)} className="input-field w-full" />
-               <button onClick={() => triggerAi(exp.role, 'experience', index, 'description')} className="text-xs text-blue-600 font-bold mt-1 flex gap-1"><Sparkles size={10} /> Enhance</button>
             </div>
           ))}
-          <button onClick={() => addField('experience', { company: '', role: '', date: '', location: '', description: '' })} className="add-btn"><Plus size={14} /> Add Experience</button>
+          <button onClick={() => addField('experience', { company: '', role: '', date: '', location: '', description: '' })} className="add-btn"><Plus size={14} /> Add Job</button>
         </div>
       )}
 
@@ -129,39 +120,40 @@ const ResumeForm = ({ data, handlePersonalChange, handleImageUpload, addField, r
         <div className="p-6 space-y-4">
            <div>
               <label className="text-xs font-medium text-slate-500">Technical Skills</label>
-              <textarea value={data.skills} onChange={(e) => handleListChange(e, 'skills')} placeholder="add here your skills..." className="input-field w-full" />
+              {/* --- CHECK THIS: Using handleListChange --- */}
+              <textarea value={data.skills} onChange={(e) => handleListChange(e, 'skills')} placeholder="Python, Django, React..." className="input-field w-full" />
            </div>
            <div>
               <label className="text-xs font-medium text-slate-500">Languages</label>
-              <textarea value={data.languages} onChange={(e) => handleListChange(e, 'way of Communication')} placeholder="English, Spanish..." className="input-field w-full" />
+              {/* --- CHECK THIS: Using handleListChange --- */}
+              <textarea value={data.languages} onChange={(e) => handleListChange(e, 'languages')} placeholder="English, Spanish..." className="input-field w-full" />
            </div>
            <div>
               <label className="text-xs font-medium text-slate-500">Interests</label>
+              {/* --- CHECK THIS: Using handleListChange --- */}
               <textarea value={data.interests} onChange={(e) => handleListChange(e, 'interests')} placeholder="Reading, Traveling..." className="input-field w-full" />
            </div>
         </div>
       )}
 
-      {/* 6. CERTIFICATIONS & AWARDS (NEW!) */}
+      {/* 6. CERTIFICATIONS & AWARDS */}
       <SectionTitle id="awards" icon={Award} title="Certifications & Awards" />
       {activeSection === 'awards' && (
         <div className="p-6 space-y-4">
-           {/* Certifications */}
            <h3 className="text-sm font-bold text-slate-700">Certifications</h3>
            {data.certifications.map((cert, index) => (
              <div key={index} className="flex gap-2 items-center mb-2">
-                <input type="text" placeholder="Certificate Name (e.g. AWS Cloud)" value={cert.name} onChange={(e) => updateField('certifications', index, 'name', e.target.value)} className="input-field" />
+                <input type="text" placeholder="Name" value={cert.name} onChange={(e) => updateField('certifications', index, 'name', e.target.value)} className="input-field" />
                 <input type="text" placeholder="Year" value={cert.year} onChange={(e) => updateField('certifications', index, 'year', e.target.value)} className="input-field w-24" />
                 <button onClick={() => removeField('certifications', index)} className="text-red-400"><Trash2 size={16}/></button>
              </div>
            ))}
            <button onClick={() => addField('certifications', { name: '', year: '' })} className="add-btn mb-4"><Plus size={14} /> Add Cert</button>
 
-           {/* Awards */}
            <h3 className="text-sm font-bold text-slate-700 border-t pt-4">Awards / Volunteer</h3>
            {data.awards.map((awd, index) => (
              <div key={index} className="flex gap-2 items-center mb-2">
-                <input type="text" placeholder="Award / Volunteer Title" value={awd.title} onChange={(e) => updateField('awards', index, 'title', e.target.value)} className="input-field" />
+                <input type="text" placeholder="Title" value={awd.title} onChange={(e) => updateField('awards', index, 'title', e.target.value)} className="input-field" />
                 <input type="text" placeholder="Details" value={awd.details} onChange={(e) => updateField('awards', index, 'details', e.target.value)} className="input-field" />
                 <button onClick={() => removeField('awards', index)} className="text-red-400"><Trash2 size={16}/></button>
              </div>
@@ -170,7 +162,6 @@ const ResumeForm = ({ data, handlePersonalChange, handleImageUpload, addField, r
         </div>
       )}
 
-      {/* STYLES */}
       <style>{`
         .input-field { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; outline: none; transition: 0.2s; }
         .input-field:focus { border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1); }
