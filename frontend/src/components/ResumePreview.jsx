@@ -228,20 +228,31 @@ const ResumePreview = forwardRef(({ data, template }, ref) => {
     <>
       <style>{`
         @media print {
-            /* 1. Hide everything else (Visibility Hidden allows children to override) */
             body * {
                 visibility: hidden;
             }
 
-            /* 2. Show the Resume & Force Colors */
-            #resume-preview-container, #resume-preview-container * {
-                visibility: visible;
-                -webkit-print-color-adjust: exact !important;   /* Chrome/Safari */
-                print-color-adjust: exact !important;           /* Firefox */
-                color-adjust: exact !important;
+            /* --- FIX: Force White Background even if Dark Mode is On --- */
+            @media (prefers-color-scheme: dark) {
+                body {
+                    background-color: white !important;
+                    color: black !important;
+                }
             }
 
-            /* 3. Positioning */
+            #resume-preview-container, #resume-preview-container * {
+                visibility: visible;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                background-color: white !important; /* Force container white */
+                color: black !important; /* Force text black (unless styled otherwise) */
+            }
+
+            /* Restore Text Colors for Header */
+            .text-white { color: white !important; }
+            .text-blue-700 { color: #1d4ed8 !important; }
+            
             #resume-preview-container {
                 position: absolute;
                 left: 0;
@@ -250,7 +261,6 @@ const ResumePreview = forwardRef(({ data, template }, ref) => {
                 min-height: 297mm;
                 margin: 0;
                 padding: 0;
-                background-color: white !important;
                 z-index: 999999;
             }
         }
