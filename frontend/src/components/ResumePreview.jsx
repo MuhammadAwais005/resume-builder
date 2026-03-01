@@ -282,5 +282,4 @@ const ResumePreview = forwardRef(({ data, template }, ref) => {
     </>
   );
 });
-
 export default ResumePreview;
