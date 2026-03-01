@@ -32,6 +32,7 @@ const ResumePreview = forwardRef(({ data, template }, ref) => {
   // --- TEMPLATE 1: MODERN ---
   const ModernTemplate = () => (
     <div className="h-[297mm] bg-white text-slate-800 font-sans flex flex-col">
+      {/* Header - IMPORTANT: Added 'print:bg-...' to ensure color sticks */}
       <div className={`${theme.header} text-white p-8 flex items-center gap-6 shrink-0`}>
         {data.image && (
           <img src={data.image} alt="Profile" className="w-32 h-32 rounded-full object-cover border-4 border-white/30 shadow-lg" />
@@ -232,7 +233,7 @@ const ResumePreview = forwardRef(({ data, template }, ref) => {
                 visibility: hidden;
             }
 
-            /* --- FIX: Force White Background even if Dark Mode is On --- */
+            /* --- FIX: Force White Background but KEEP element colors --- */
             @media (prefers-color-scheme: dark) {
                 body {
                     background-color: white !important;
@@ -240,20 +241,9 @@ const ResumePreview = forwardRef(({ data, template }, ref) => {
                 }
             }
 
-            #resume-preview-container, #resume-preview-container * {
-                visibility: visible;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-                color-adjust: exact !important;
-                background-color: white !important; /* Force container white */
-                color: black !important; /* Force text black (unless styled otherwise) */
-            }
-
-            /* Restore Text Colors for Header */
-            .text-white { color: white !important; }
-            .text-blue-700 { color: #1d4ed8 !important; }
-            
+            /* Main Container: Force White Paper */
             #resume-preview-container {
+                visibility: visible !important;
                 position: absolute;
                 left: 0;
                 top: 0;
@@ -262,6 +252,21 @@ const ResumePreview = forwardRef(({ data, template }, ref) => {
                 margin: 0;
                 padding: 0;
                 z-index: 999999;
+                background-color: white !important; /* Paper Color */
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            /* 
+               CRITICAL FIX: 
+               We select the CHILDREN of the resume and tell them to be visible.
+               We DO NOT force them to be white. This allows the Purple Header to exist.
+            */
+            #resume-preview-container * {
+                visibility: visible !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
         }
       `}</style>
